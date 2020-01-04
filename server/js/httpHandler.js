@@ -14,6 +14,8 @@ module.exports.initialize = (queue) => {
   messageQueue = queue;
 };
 
+console.log(path.dirname(__dirname))
+
 // this function currently only handles an OPTIONS request
 module.exports.router = (req, res, next = ()=>{}) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
