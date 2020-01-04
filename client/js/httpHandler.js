@@ -30,6 +30,56 @@
     return randomSwimming; // return process ID to enable clearInterval() function
   }
 
+  window.startPolling = () => {
+    $.ajax({
+      url: serverUrl + '/queue',
+      type: 'GET',
+      success: (directionString) => {
+        console.log('polling')
+        if (['left','right','up','down'].includes(directionString)){
+          SwimTeam.move(directionString)
+          startPolling()
+        } else {
+          setTimeout(startPolling, 1000)
+        }
+      },
+      error: (response) => {
+        console.log('Polling Error', response)
+      }
+    })
+  }
+
+  const requestDefaultImage = () => {
+    $.ajax({
+      url: serverUrl + '/background',
+      type: "GET",
+      //dataType: 'image/jpeg',
+      success: (image) => {
+        $('.pool').css('background-image', `url(data:image/jpeg;base64,${image})`);
+      },
+      error: (response) => {
+        console.log('IMAGE ERROR', response.status);
+      }
+    })
+  }
+
+  // const requestSpecificImage = () => {
+  //   $.ajax({
+  //     url: serverUrl + '/background?image=' + '/server/spec/water-lg.jpg',
+  //     type: "GET",
+  //     //dataType: 'image/jpg',
+  //     success: (image) => {
+  //       console.log('<img src=data:image/jpeg;base64,' + image + '/>');
+  //       $
+  //     },
+  //     error: (response) => {
+  //       console.log('IMAGE ERROR', response)
+  //     }
+  //   })
+  // }
+
+  requestDefaultImage()
+
   /////////////////////////////////////////////////////////////////////
   // The ajax file uploader is provided for your convenience!
   // Note: remember to fix the URL below.
@@ -71,5 +121,3 @@ $('form').on('submit', function (e) {
 });
 
 }) ();
-
-HTMLInputElementObject.addEventListener('input', (e) => console.log(e));
