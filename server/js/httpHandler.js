@@ -4,6 +4,7 @@ const headers = require('./cors');
 const multipart = require('./multipartUtils');
 
 const url = require('url');
+const dequeue = require('./messageQueue.js').dequeue
 
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
@@ -25,10 +26,18 @@ module.exports.router = (req, res, next = ()=>{}) => {
   // '/random', 'GET', 'POST' (backgrounds)
   const path = url.parse(req.url).pathname;
 
-  // handle basic 'GET' response
+  // handle basic 'GET' response with '/random' endpoint
   if (req.method === 'GET' && path === '/random') {
     const random = ['left', 'right', 'up', 'down'][Math.floor(Math.random() * 4)];
     res.end(random); // return random response
+  }
+
+  // handle basic 'GET' response with '/queue' endpoint
+  if (req.method === 'GET' && path === '/queue') {
+    if (messageQueue && (messageQueue.length > 0)) {
+      console.log('Found a message in the queue to serve to client!');
+      res.end(dequeue());
+    }
   }
 
   //res.write('Welcome to my server!') // res.write puts things to the DOM
