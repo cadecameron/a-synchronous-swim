@@ -91,7 +91,7 @@
   $.ajax({
     type: 'POST',
     data: formData,
-    url: serverUrl,
+    url: serverUrl + "/upload",
     cache: false,
     contentType: false,
     processData: false,

@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const headers = require('./cors');
 const multipart = require('./multipartUtils');
+const dequeue = require('./messageQueue.js').dequeue
+const _ = require('underscore')
 
 const url = require('url');
 
@@ -9,30 +11,69 @@ const url = require('url');
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
 ////////////////////////////////////////////////////////
 
-let messageQueue = null;
-module.exports.initialize = (queue) => {
-  messageQueue = queue;
-};
-
-console.log(path.dirname(__dirname))
 
 // this function currently only handles an OPTIONS request
-module.exports.router = (req, res, next = ()=>{}) => {
+module.exports.router = (req, res, next = () => { }) => {
   console.log('Serving request type ' + req.method + ' for url ' + req.url);
-  res.writeHead(200, headers); // var randomCmd = ??; res.end(randomCmd)
 
   // check statement to handle different endpoints and response methods
   // '/random', 'GET', 'POST' (backgrounds)
-  const path = url.parse(req.url).pathname;
+  const pathString = url.parse(req.url).pathname;
 
   // handle basic 'GET' response
-  if (req.method === 'GET' && path === '/random') {
+  if (req.method === 'GET' && pathString === '/random') {
+    res.writeHead(200, headers);
     const random = ['left', 'right', 'up', 'down'][Math.floor(Math.random() * 4)];
     res.end(random); // return random response
-  }
+  } else if (req.method === "GET" && pathString === '/queue') {
+    res.writeHead(200, headers);
+    const item = dequeue();
+    if (item) {
+      res.end(item);
+    } else {
+      res.end();
+    }
+  } else if (req.method === "GET" && pathString === '/background') {
+    // const imagePath = url.parse(req.url, true).query.image
+    // console.log(imagePath)
+    // const fullPath = path.dirname(path.dirname(__dirname)) + imagePath
+    fs.readFile(module.exports.backgroundImageFile, (err, image) => {
+      if (err) {
+        res.writeHead(404, headers);
+        res.end();
+      } else {
+        var base64Image = new Buffer(image, 'binary').toString('base64');
+        const imageHeader = _.extend({}, headers)
+        imageHeader['Content-Type'] = 'image/jpeg';
+        imageHeader['Content-Length'] = base64Image.length;
+        res.writeHead(200, imageHeader);
+        res.end(base64Image);
+      }
+    })
 
+  } else if (req.method === "POST" && pathString === "/upload"){
+    var bufferArray = [];
+    req.on('data', (chunk) => {
+      bufferArray.push(chunk);
+    });
+    req.on('end', function() {
+      const buffer = Buffer.concat(bufferArray);
+      const post = multipart.getFile(buffer);
+      fs.writeFile(module.exports.backgroundImageFile, post.data, (err)=>{
+        if (err){
+          console.log("WRITE ERROR IN UPLOAD IMAGE", err);
+        } else {
+          console.log("WRITE SUCCESS");
+        }
+      });
+    })
+    res.writeHead(201, headers);
+    res.end();
+  } else {
+    res.writeHead(200, headers);
+    res.end();
+  }
   //res.write('Welcome to my server!') // res.write puts things to the DOM
-  res.end();
   next(); // invoke next() at the end of a request to help with testing!
 };
 
