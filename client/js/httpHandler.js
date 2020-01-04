@@ -117,7 +117,7 @@ $('form').on('submit', function (e) {
     return;
   }
 
-  ajaxFileUplaod(file);
+  ajaxFileUpload(file);
 });
 
 }) ();
