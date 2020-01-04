@@ -9,11 +9,26 @@
   // asks the server for any commands it needs to action.
   //
 
-  const ajaxFetchCommand = () =
-  .ajax...
-    success: (command) => {
-  SwimTime.move(command)
-}
+  window.ajaxRandomCommand = () => {
+    $.ajax({
+      url: serverUrl + '/random',
+      type: 'GET',
+      success: (directionString) => {
+        SwimTeam.move(directionString);
+      }
+    })
+
+  // .ajax...
+  //   success: (command) => {
+  // SwimTeam.move(command)
+  }
+
+  window.startRandomSwimming = () => {
+    const randomSwimming = setInterval(() => {
+      window.ajaxRandomCommand()
+    }, 1000);
+    return randomSwimming; // return process ID to enable clearInterval() function
+  }
 
   /////////////////////////////////////////////////////////////////////
   // The ajax file uploader is provided for your convenience!
@@ -56,3 +71,5 @@ $('form').on('submit', function (e) {
 });
 
 }) ();
+
+HTMLInputElementObject.addEventListener('input', (e) => console.log(e));
