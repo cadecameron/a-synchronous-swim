@@ -30,8 +30,10 @@ module.exports.router = (req, res, next = () => { }) => {
     const item = dequeue();
     if (item) {
       res.end(item);
+      next()
     } else {
       res.end();
+      next()
     }
   } else if (req.method === "GET" && pathString === '/background') {
     // const imagePath = url.parse(req.url, true).query.image
@@ -39,8 +41,11 @@ module.exports.router = (req, res, next = () => { }) => {
     // const fullPath = path.dirname(path.dirname(__dirname)) + imagePath
     fs.readFile(module.exports.backgroundImageFile, (err, image) => {
       if (err) {
+        console.log('ERROR 404 ERROR <-----------------------------------------------------')
         res.writeHead(404, headers);
+        console.log(res._responseCode);
         res.end();
+        next()
       } else {
         var base64Image = new Buffer(image, 'binary').toString('base64');
         const imageHeader = _.extend({}, headers)
@@ -48,6 +53,7 @@ module.exports.router = (req, res, next = () => { }) => {
         imageHeader['Content-Length'] = base64Image.length;
         res.writeHead(200, imageHeader);
         res.end(base64Image);
+        next()
       }
     })
 
@@ -59,7 +65,13 @@ module.exports.router = (req, res, next = () => { }) => {
     req.on('end', function() {
       const buffer = Buffer.concat(bufferArray);
       const post = multipart.getFile(buffer);
-      fs.writeFile(module.exports.backgroundImageFile, post.data, (err)=>{
+      if (!post || post.data === null){
+        console.log('post', post)
+        post = multipart.parse(buffer)
+      } else {
+        post = post.data
+      }
+      fs.writeFile(module.exports.backgroundImageFile, post, (err)=>{
         if (err){
           console.log("WRITE ERROR IN UPLOAD IMAGE", err);
         } else {
@@ -69,12 +81,14 @@ module.exports.router = (req, res, next = () => { }) => {
     })
     res.writeHead(201, headers);
     res.end();
+    next()
   } else {
     res.writeHead(200, headers);
     res.end();
+    next()
   }
   //res.write('Welcome to my server!') // res.write puts things to the DOM
-  next(); // invoke next() at the end of a request to help with testing!
+  // invoke next() at the end of a request to help with testing!
 };
 
 
