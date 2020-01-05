@@ -53,7 +53,6 @@
     $.ajax({
       url: serverUrl + '/background',
       type: "GET",
-      //dataType: 'image/jpeg',
       success: (image) => {
         $('.pool').css('background-image', `url(data:image/jpeg;base64,${image})`);
       },
