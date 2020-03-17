@@ -17,6 +17,20 @@
         SwimTeam.move(directionString);
       }
     })
+  }
+
+  window.serverPost = () => {
+    $.ajax({
+      url: serverUrl + '/queue',
+      type: 'GET',
+      success: (directionString) => {
+        SwimTeam.move(directionString);
+      },
+      complete: () => {
+        window.serverPost(); // complete property used when server eventually sends data
+      },
+      timeout: 10000 // timeout before running the complete property function
+    })
 
   // .ajax...
   //   success: (command) => {
@@ -120,3 +134,5 @@ $('form').on('submit', function (e) {
 });
 
 }) ();
+
+//HTMLInputElementObject.addEventListener('input', (e) => console.log(e));

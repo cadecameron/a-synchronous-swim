@@ -8,7 +8,7 @@ keypressHandler.initialize((message) => {
   if (['left', 'right', 'up', 'down'].includes(message)) {
     enqueue(message);
   } else {
-    console.log('not an option')
+    console.log('not an option');
   }
 });
 

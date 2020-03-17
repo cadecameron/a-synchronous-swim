@@ -6,6 +6,7 @@ const dequeue = require('./messageQueue.js').dequeue
 const _ = require('underscore')
 
 const url = require('url');
+const dequeue = require('./messageQueue.js').dequeue
 
 // Path for the background image ///////////////////////
 module.exports.backgroundImageFile = path.join('.', 'background.jpg');
@@ -57,6 +58,7 @@ module.exports.router = (req, res, next = () => { }) => {
       }
     })
 
+<<<<<<< HEAD
   } else if (req.method === "POST" && pathString === "/upload"){
     var bufferArray = [];
     req.on('data', (chunk) => {
@@ -87,6 +89,16 @@ module.exports.router = (req, res, next = () => { }) => {
     res.end();
     next()
   }
+=======
+  // handle basic 'GET' response with '/queue' endpoint
+  if (req.method === 'GET' && path === '/queue') {
+    if (messageQueue && (messageQueue.length > 0)) {
+      console.log('Found a message in the queue to serve to client!');
+      res.end(dequeue());
+    }
+  }
+
+>>>>>>> origin/solo
   //res.write('Welcome to my server!') // res.write puts things to the DOM
   // invoke next() at the end of a request to help with testing!
 };
