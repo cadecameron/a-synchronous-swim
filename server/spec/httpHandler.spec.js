@@ -23,8 +23,6 @@ describe('server responses', () => {
   });
 
   it('should respond to a GET request for a swim command', (done) => {
-
-    // Cade added code:
     let {req, res} = server.mock('/random', 'GET');
 
     httpHandler.router(req, res);
@@ -35,7 +33,6 @@ describe('server responses', () => {
   });
 
   it('should respond to a GET request for a swim command', (done) => {
-
     let {req, res} = server.mock('/queue', 'GET');
 
     enqueue('left')

@@ -2,13 +2,6 @@
 
   const serverUrl = 'http://127.0.0.1:3000';
 
-  //
-  // TODO: build the swim command fetcher here
-  // GET request function that sends the request
-  // the function will be on a setTimer, so that the client continually
-  // asks the server for any commands it needs to action.
-  //
-
   window.ajaxRandomCommand = () => {
     $.ajax({
       url: serverUrl + '/random',
@@ -31,10 +24,6 @@
       },
       timeout: 10000 // timeout before running the complete property function
     })
-
-  // .ajax...
-  //   success: (command) => {
-  // SwimTeam.move(command)
   }
 
   window.startRandomSwimming = () => {
@@ -76,27 +65,7 @@
     })
   }
 
-  // const requestSpecificImage = () => {
-  //   $.ajax({
-  //     url: serverUrl + '/background?image=' + '/server/spec/water-lg.jpg',
-  //     type: "GET",
-  //     //dataType: 'image/jpg',
-  //     success: (image) => {
-  //       console.log('<img src=data:image/jpeg;base64,' + image + '/>');
-  //       $
-  //     },
-  //     error: (response) => {
-  //       console.log('IMAGE ERROR', response)
-  //     }
-  //   })
-  // }
-
-  requestDefaultImage()
-
-  /////////////////////////////////////////////////////////////////////
-  // The ajax file uploader is provided for your convenience!
-  // Note: remember to fix the URL below.
-  /////////////////////////////////////////////////////////////////////
+  requestDefaultImage();
 
   const ajaxFileUpload = (file) => {
   var formData = new FormData();
@@ -109,8 +78,7 @@
     contentType: false,
     processData: false,
     success: () => {
-      // reload the page
-      window.location = window.location.href;
+      window.location = window.location.href; // reload the page
     }
   });
 };
@@ -134,5 +102,3 @@ $('form').on('submit', function (e) {
 });
 
 }) ();
-
-//HTMLInputElementObject.addEventListener('input', (e) => console.log(e));

@@ -1,9 +1,9 @@
-
-
 const keypressHandler = require('./js/keypressHandler');
-const enqueue = require('./js/messageQueue.js').enqueue
+const enqueue = require('./js/messageQueue.js').enqueue;
 
-// keypressHandler.initialize(message => console.log(`Message received: ${message}`));
+const PORT = 3000;
+const URL = '127.0.0.1';
+
 keypressHandler.initialize((message) => {
   if (['left', 'right', 'up', 'down'].includes(message)) {
     enqueue(message);
@@ -18,9 +18,7 @@ const httpHandler = require('./js/httpHandler');
 const http = require('http');
 const server = http.createServer(httpHandler.router);
 
-const port = 3000;
-const ip = '127.0.0.1';
-server.listen(port, ip);
+server.listen(PORT, URL);
 
 console.log('Server is running in the terminal!');
-console.log(`Listening on http://${ip}:${port}`);
+console.log(`Listening on http://${URL}:${PORT}`);

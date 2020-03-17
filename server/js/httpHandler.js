@@ -31,22 +31,19 @@ module.exports.router = (req, res, next = () => { }) => {
     const item = dequeue();
     if (item) {
       res.end(item);
-      next()
+      next();
     } else {
       res.end();
-      next()
+      next();
     }
   } else if (req.method === "GET" && pathString === '/background') {
-    // const imagePath = url.parse(req.url, true).query.image
-    // console.log(imagePath)
-    // const fullPath = path.dirname(path.dirname(__dirname)) + imagePath
     fs.readFile(module.exports.backgroundImageFile, (err, image) => {
       if (err) {
         console.log('ERROR 404 ERROR <-----------------------------------------------------')
         res.writeHead(404, headers);
         console.log(res._responseCode);
         res.end();
-        next()
+        next();
       } else {
         var base64Image = new Buffer(image, 'binary').toString('base64');
         const imageHeader = _.extend({}, headers)
@@ -54,11 +51,9 @@ module.exports.router = (req, res, next = () => { }) => {
         imageHeader['Content-Length'] = base64Image.length;
         res.writeHead(200, imageHeader);
         res.end(base64Image);
-        next()
+        next();
       }
-    })
-
-<<<<<<< HEAD
+    });
   } else if (req.method === "POST" && pathString === "/upload"){
     var bufferArray = [];
     req.on('data', (chunk) => {
@@ -68,10 +63,10 @@ module.exports.router = (req, res, next = () => { }) => {
       const buffer = Buffer.concat(bufferArray);
       const post = multipart.getFile(buffer);
       if (!post || post.data === null){
-        console.log('post', post)
+        console.log('post', post);
         post = multipart.parse(buffer)
       } else {
-        post = post.data
+        post = post.data;
       }
       fs.writeFile(module.exports.backgroundImageFile, post, (err)=>{
         if (err){
@@ -83,13 +78,13 @@ module.exports.router = (req, res, next = () => { }) => {
     })
     res.writeHead(201, headers);
     res.end();
-    next()
+    next();
   } else {
     res.writeHead(200, headers);
     res.end();
-    next()
+    next();
   }
-=======
+
   // handle basic 'GET' response with '/queue' endpoint
   if (req.method === 'GET' && path === '/queue') {
     if (messageQueue && (messageQueue.length > 0)) {
@@ -98,7 +93,6 @@ module.exports.router = (req, res, next = () => { }) => {
     }
   }
 
->>>>>>> origin/solo
   //res.write('Welcome to my server!') // res.write puts things to the DOM
   // invoke next() at the end of a request to help with testing!
 };

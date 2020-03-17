@@ -43,7 +43,6 @@ const SwimTeam = {
 
   updateLoc: (direction) => {
     // calculate what the new position is for the swim-team is
-    // but don't let the swim-team get outside the max bounds!
     switch (direction) {
     case 'up':
       if (SwimTeam.coords.top > SwimTeam.max.top) {
@@ -65,7 +64,7 @@ const SwimTeam = {
         SwimTeam.coords.left += 5;
       }
       break;
-    } 
+    }
   }
 
 };
