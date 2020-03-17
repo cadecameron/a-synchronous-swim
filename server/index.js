@@ -1,8 +1,16 @@
 
 
-
 const keypressHandler = require('./js/keypressHandler');
-keypressHandler.initialize(message => console.log(`Message received: ${message}`));
+const enqueue = require('./js/messageQueue.js').enqueue
+
+// keypressHandler.initialize(message => console.log(`Message received: ${message}`));
+keypressHandler.initialize((message) => {
+  if (['left', 'right', 'up', 'down'].includes(message)) {
+    enqueue(message);
+  } else {
+    console.log('not an option')
+  }
+});
 
 const httpHandler = require('./js/httpHandler');
 
